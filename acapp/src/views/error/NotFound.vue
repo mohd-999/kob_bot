@@ -1,11 +1,11 @@
 <template>
     <ContentField>
-        我的Bot
+        404 Not Found
     </ContentField>
 </template>
 
 <script>
-import ContentField from '../../../components/ContentField.vue'
+import ContentField from '../../components/ContentField.vue'
 
 export default {
     components: {
@@ -15,5 +15,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

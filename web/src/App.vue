@@ -1,5 +1,5 @@
 <template>
-  <NavBar></NavBar>
+  <NavBar />
   <router-view></router-view>
 </template>
 
@@ -62,7 +62,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 body {
   background-image: url("@/assets/images/background.png");
   background-size: cover;

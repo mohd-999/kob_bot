@@ -5,8 +5,6 @@ import RanklistIndexView from '../views/ranklist/RanklistIndexView'
 import UserBotIndexView from '../views/user/bot/UserBotIndexView'
 import NotFound from '../views/error/NotFound'
 
-
-
 const routes = [
   {
     path: "/",
@@ -40,7 +38,7 @@ const routes = [
   },
   {
     path: "/:catchAll(.*)",
-    redirect: "/404/",
+    redirect: "/404/"
   }
 ]
 

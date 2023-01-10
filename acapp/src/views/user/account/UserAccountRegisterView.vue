@@ -1,6 +1,6 @@
 <template>
     <ContentField>
-        我的Bot
+        注册
     </ContentField>
 </template>
 
@@ -15,5 +15,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
