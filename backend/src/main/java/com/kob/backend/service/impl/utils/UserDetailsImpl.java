@@ -1,7 +1,6 @@
 package com.kob.backend.service.impl.utils;
 
 import com.kob.backend.pojo.User;
-import com.sun.tracing.dtrace.ArgsAttributes;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

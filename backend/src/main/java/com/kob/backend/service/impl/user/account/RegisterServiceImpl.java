@@ -51,7 +51,7 @@ public class RegisterServiceImpl implements RegisterService {
         }
 
         if(!password.equals(confirmedPassword)) {
-            map.put("error_massage", "两次输入的密码不一致");
+            map.put("error_message", "两次输入的密码不一致");
             return map;
         }
 
@@ -59,7 +59,7 @@ public class RegisterServiceImpl implements RegisterService {
         queryWrapper.eq("username", username);
         List<User> users = userMapper.selectList(queryWrapper);
         if(!users.isEmpty()) {
-            map.put("error_massage", "用户已存在");
+            map.put("error_message", "用户名已存在");
             return map;
         }
 
@@ -67,7 +67,7 @@ public class RegisterServiceImpl implements RegisterService {
         String photo = "https://cdn.acwing.com/media/user/profile/photo/63694_lg_bded774842.jpg";
         User user = new User(null, username, encodedPassword, photo);
         userMapper.insert(user);
-        map.put("error_massage", "用户创建成功");
+        map.put("error_message", "用户创建成功");
         return map;
     }
 }
