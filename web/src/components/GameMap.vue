@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import { GameMap } from '@/assets/scripts/GameMap';
-import { ref, onMounted } from 'vue';
+import { GameMap } from '@/assets/scripts/GameMap'
+import { ref, onMounted } from 'vue'
 
 export default {
     setup() {

@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import ContentField from '@/components/ContentField.vue'
-import { useStore } from 'vuex';
-import { ref } from 'vue';
-import router from '../../../router/index';
+import ContentField from '../../../components/ContentField.vue'
+import { useStore } from 'vuex'
+import { ref } from 'vue'
+import router from '../../../router/index'
 
 export default {
     components: {
@@ -43,8 +43,7 @@ export default {
                 success() {
                     store.dispatch("getinfo", {
                         success() {
-                            router.push({name : 'home'});
-                            console.log(store.state.user);
+                            router.push({ name: 'home' });
                         }
                     });
                 },
