@@ -103,7 +103,6 @@ router.beforeEach((to, from, next) => {
   } else {
     if(to.meta.requestAuth && !store.state.user.is_login) {
       next({name: "user_account_login"});
-      store.commit("updatePullingInfo", false);
     } else {
       next();
       store.commit("updatePullingInfo", false);
