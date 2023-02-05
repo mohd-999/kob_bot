@@ -12,20 +12,20 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class MatchingPool extends Thread {
-    private final static String startGameUrl = "http://localhost:3000/pk/start/game/";
+    private final static String startGameUrl = "http://127.0.0.1:3000/pk/start/game/";
     private static List<Player> players = new ArrayList<>();
     private static RestTemplate restTemplate;
-    private ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
         MatchingPool.restTemplate = restTemplate;
     }
 
-    public void addPlayer(Integer userId, Integer rating) {
+    public void addPlayer(Integer userId, Integer rating, Integer botId) {
         lock.lock();
         try {
-            players.add(new Player(userId, rating, 0));
+            players.add(new Player(userId, rating, botId, 0));
         } finally {
             lock.unlock();
         }
@@ -62,7 +62,9 @@ public class MatchingPool extends Thread {
         System.out.println("send result: " + a + " " + b);
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("a_id", a.getUserId().toString());
+        data.add("a_bot_id", a.getBotId().toString());
         data.add("b_id", b.getUserId().toString());
+        data.add("b_bot_id", b.getBotId().toString());
         restTemplate.postForObject(startGameUrl, data, String.class);
     }
 
@@ -92,7 +94,7 @@ public class MatchingPool extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (true) {  // 时钟模式
             try {
                 Thread.sleep(1000);
                 lock.lock();

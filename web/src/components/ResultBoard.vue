@@ -1,5 +1,5 @@
 <template>
-    <div class="result-borad">
+    <div class="result-board">
         <div class="result-board-text" v-if="$store.state.pk.loser == 'all'">
             平局
         </div>
@@ -46,7 +46,7 @@ export default {
 </script>
 
 <style scoped>
-div.result-borad {
+div.result-board {
     position: absolute;
     top: 30vh;
     left: 35vw;

@@ -3,8 +3,10 @@ package com.kob.backend.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.utils.Game;
 import com.kob.backend.consumer.utils.JwtAuthentication;
+import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.mapper.UserMapper;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,11 +28,12 @@ public class WebSocketServer {
     final private static String addPlayerUrl = "http://127.0.0.1:3001/player/add/";
     final private static String removePlayerUrl = "http://127.0.0.1:3001/player/remove/";
     public static RecordMapper recordMapper;
+    public static RestTemplate restTemplate;
     private static UserMapper userMapper;
-    private static RestTemplate restTemplate;
+    private static BotMapper botMapper;
+    public Game game = null;
     private User user;
     private Session session = null;
-    private Game game = null;
 
     private static void resp(User a, User b, JSONObject respGame) {
         JSONObject respA = new JSONObject();
@@ -42,10 +45,20 @@ public class WebSocketServer {
             users.get(a.getId()).sendMessage(respA.toJSONString());
     }
 
-    public static void startGame(Integer aId, Integer bId) {  // 建立对局信息
+    public static void startGame(Integer aId, Integer aBotId, Integer bId, Integer bBotId) {  // 建立对局信息
         User a = userMapper.selectById(aId);
         User b = userMapper.selectById(bId);
-        Game game = new Game(13, 14, 10, a.getId(), b.getId());
+        Bot botA = botMapper.selectById(aBotId);
+        Bot botB = botMapper.selectById(bBotId);
+        Game game = new Game(
+                13,
+                14,
+                10,
+                a.getId(),
+                botA,
+                b.getId(),
+                botB
+        );
         game.createMap();
         if (users.get(a.getId()) != null)
             users.get(a.getId()).game = game;
@@ -83,6 +96,11 @@ public class WebSocketServer {
         WebSocketServer.restTemplate = restTemplate;
     }
 
+    @Autowired
+    public void setBotMapper(BotMapper botMapper) {
+        WebSocketServer.botMapper = botMapper;
+    }
+
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) throws IOException {  // 建立连接
         this.session = session;
@@ -105,11 +123,12 @@ public class WebSocketServer {
         }
     }
 
-    private void startMatching() {  // 玩家加入匹配池
+    private void startMatching(Integer botId) {  // 玩家加入匹配池
         System.out.println("start matching!");
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", this.user.getId().toString());
         data.add("rating", this.user.getRating().toString());
+        data.add("bot_id", botId.toString());
         restTemplate.postForObject(addPlayerUrl, data, String.class);
     }
 
@@ -122,20 +141,21 @@ public class WebSocketServer {
 
     private void move(int direction) {
         if (game.getPlayerA().getId().equals(user.getId())) {
-            game.setNextStepA(direction);
+            if (game.getPlayerA().getBotId().equals(-1))  // 亲自出马才能操作
+                game.setNextStepA(direction);
         } else if (game.getPlayerB().getId().equals(user.getId())) {
-            game.setNextStepB(direction);
+            if (game.getPlayerB().getBotId().equals(-1))  // 亲自出马才能操作
+                game.setNextStepB(direction);
         }
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {  // 从Client接收消息
         System.out.println("receive message!");
-
         JSONObject data = JSONObject.parseObject(message);
         String event = data.getString("event");
         if ("start-matching".equals(event)) {
-            startMatching();
+            startMatching(data.getInteger("bot_id"));
         } else if ("stop-matching".equals(event)) {
             stopMatching();
         } else if ("move".equals(event)) {

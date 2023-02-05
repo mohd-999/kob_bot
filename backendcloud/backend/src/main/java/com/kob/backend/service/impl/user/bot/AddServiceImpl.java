@@ -52,7 +52,7 @@ public class AddServiceImpl implements AddService {
             return map;
         }
         if (content.length() > 10000) {
-            map.put("error_messaage", "代码长度不能大于10000");
+            map.put("error_message", "代码长度不能大于10000");
             return map;
         }
 

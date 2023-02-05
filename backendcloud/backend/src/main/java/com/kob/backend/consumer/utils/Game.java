@@ -2,7 +2,10 @@ package com.kob.backend.consumer.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Game extends Thread {
     final private static int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
+    final private static String addBotUrl = "http://127.0.0.1:3002/bot/add/";
     final private Integer rows;  // 行
     final private Integer cols;  // 列
     final private Integer inner_walls_count;  // 障碍物数量
@@ -24,13 +28,26 @@ public class Game extends Thread {
     private String status = "playing"; // playing -> finished
     private String loser = "";  // all：平局  A：A输  B：B输
 
-    public Game(Integer rows, Integer cols, Integer inner_walls_count, Integer idA, Integer idB) {
+    public Game(Integer rows, Integer cols, Integer inner_walls_count, Integer idA, Bot botA, Integer idB, Bot botB) {
         this.rows = rows;
         this.cols = cols;
         this.inner_walls_count = inner_walls_count;
         this.g = new int[rows][cols];
-        playerA = new Player(idA, rows - 2, 1, new ArrayList<>());
-        playerB = new Player(idB, 1, cols - 2, new ArrayList<>());
+
+        Integer botIdA = -1;
+        Integer botIdB = -1;
+        String botCodeA = "";
+        String botCodeB = "";
+        if (botA != null) {
+            botIdA = botA.getId();
+            botCodeA = botA.getContent();
+        }
+        if (botB != null) {
+            botIdB = botB.getId();
+            botCodeB = botB.getContent();
+        }
+        playerA = new Player(idA, botIdA, botCodeA, rows - 2, 1, new ArrayList<>());
+        playerB = new Player(idB, botIdB, botCodeB, 1, cols - 2, new ArrayList<>());
     }
 
     public Player getPlayerA() {
@@ -122,12 +139,42 @@ public class Game extends Thread {
         }
     }
 
+    private String getInput(Player player) {  // 将当前的局面信息，编码成字符串
+        Player me, you;
+        if (playerA.getId().equals(player.getId())) {
+            me = playerA;
+            you = playerB;
+        } else {
+            me = playerB;
+            you = playerA;
+        }
+        return getMapString() + "#" +
+                me.getSx() + "#" +
+                me.getSy() + "#(" +
+                me.getStepsString() + "#)" +
+                you.getSx() + "#" +
+                you.getSy() + "#(" +
+                you.getStepsString() + ")";
+    }
+
+    private void sendBotCode(Player player) {
+        if (player.getBotId().equals(-1)) return; // 亲自出马，不用代码
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        data.add("user_id", player.getId().toString());
+        data.add("bot_code", player.getBotCode());
+        data.add("input", getInput(player));
+        WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
+    }
+
     private boolean nextStep() {  // 等待两名玩家操作
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        sendBotCode(playerA);
+        sendBotCode(playerB);
 
         for (int i = 0; i < 50; ++i) {
             try {
@@ -168,18 +215,18 @@ public class Game extends Thread {
     }
 
     private void judge() {  // 判断两名玩家下一步是否合法
-        List<Cell> cellA = playerA.getCells();
-        List<Cell> cellB = playerB.getCells();
+        List<Cell> cellsA = playerA.getCells();
+        List<Cell> cellsB = playerB.getCells();
 
-        boolean vailA = check_valid(cellA, cellB);
-        boolean vailB = check_valid(cellB, cellA);
+        boolean validA = check_valid(cellsA, cellsB);
+        boolean validB = check_valid(cellsB, cellsA);
 
-        if (!vailA || !vailB) {
+        if (!validA || !validB) {
             status = "finished";
 
-            if (!vailA && !vailB) {
+            if (!validA && !validB) {
                 loser = "all";
-            } else if (!vailA) {
+            } else if (!validA) {
                 loser = "A";
             } else {
                 loser = "B";
@@ -187,14 +234,14 @@ public class Game extends Thread {
         }
     }
 
-    private void sendAllMessage(String message) {  // 发送消息到两名玩家的前端
+    private void sendAllMessage(String message) {  // 发送消息到两个Client
         if (WebSocketServer.users.get(playerA.getId()) != null)
             WebSocketServer.users.get(playerA.getId()).sendMessage(message);
         if (WebSocketServer.users.get(playerB.getId()) != null)
             WebSocketServer.users.get(playerB.getId()).sendMessage(message);
     }
 
-    private void sendMove() {  // 向两名玩家传递移动信息
+    private void sendMove() {  // 向两个Client传递移动信息
         lock.lock();
         try {
             JSONObject resp = new JSONObject();
@@ -209,7 +256,7 @@ public class Game extends Thread {
         }
     }
 
-    private String getMapString() {
+    private String getMapString() {  // 将地图转换成字符串
         StringBuffer res = new StringBuffer();
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
