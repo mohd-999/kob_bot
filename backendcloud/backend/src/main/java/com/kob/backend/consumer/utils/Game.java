@@ -151,7 +151,7 @@ public class Game extends Thread {
         return getMapString() + "#" +
                 me.getSx() + "#" +
                 me.getSy() + "#(" +
-                me.getStepsString() + "#)" +
+                me.getStepsString() + ")#" +
                 you.getSx() + "#" +
                 you.getSy() + "#(" +
                 you.getStepsString() + ")";
