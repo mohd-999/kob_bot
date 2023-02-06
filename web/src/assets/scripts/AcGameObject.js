@@ -1,7 +1,7 @@
 const AC_GAME_OBJECTS = [];
 
 export class AcGameObject {
-    constructor() {
+    constructor() {  // 构造函数
         AC_GAME_OBJECTS.push(this);
         this.timedelta = 0;
         this.has_called_start = false;

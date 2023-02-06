@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
+import com.kob.backend.pojo.User;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -170,7 +171,7 @@ public class Game extends Thread {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         sendBotCode(playerA);
@@ -257,7 +258,7 @@ public class Game extends Thread {
     }
 
     private String getMapString() {  // 将地图转换成字符串
-        StringBuffer res = new StringBuffer();
+        StringBuilder res = new StringBuilder();
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
                 res.append(g[i][j]);
@@ -266,7 +267,27 @@ public class Game extends Thread {
         return res.toString();
     }
 
+    private void updateUserRating(Player player, Integer rating) {
+        User user = WebSocketServer.userMapper.selectById(player.getId());  // 取出对应 id 的玩家信息
+        user.setRating(rating);
+        WebSocketServer.userMapper.updateById(user);  // 修改对应 id 的玩家信息
+    }
+
     private void saveToDatabase() {  // 保存对战纪录到数据库
+        Integer ratingA = WebSocketServer.userMapper.selectById(playerA.getId()).getRating();
+        Integer ratingB = WebSocketServer.userMapper.selectById(playerB.getId()).getRating();
+        if("A".equals(loser)) {
+            ratingA -= 2;
+            ratingB += 5;
+        } else if("B".equals(loser)) {
+            ratingB -= 2;
+            ratingB += 5;
+        }
+
+        updateUserRating(playerA, ratingA);
+        updateUserRating(playerB, ratingB);
+
+
         Record record = new Record(
                 null,
                 playerA.getId(),
@@ -295,6 +316,11 @@ public class Game extends Thread {
 
     @Override
     public void run() {  // 多线程
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         for (int i = 0; i < 1000; ++i) {
             if (nextStep()) {  // 是否获取了两条蛇下一步操作
                 judge();

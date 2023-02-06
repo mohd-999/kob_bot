@@ -1,7 +1,7 @@
 import { AcGameObject } from "./AcGameObject";
 
 export class Wall extends AcGameObject {
-    constructor(r, c, gamemap) {
+    constructor(r, c, gamemap) {  // 构造函数
         super();
 
         this.r = r;
@@ -10,7 +10,7 @@ export class Wall extends AcGameObject {
         this.color = "#B37226";
     }
 
-    update() {
+    update() { // 每一帧执行一次，除了第一帧之外
         this.render();
     }
 

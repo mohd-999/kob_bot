@@ -12,14 +12,14 @@ import { useStore } from "vuex";
 export default {
     setup() {
         const store = useStore();
-        let parent = ref(null);
-        let canvas = ref(null);
+        let parent = ref(null);  // ref实现响应式实时更新数据
+        let canvas = ref(null);  // ref实现响应式实时更新数据
 
         onMounted(() => {
             store.commit(
                 "updateGameObject",
                 new GameMap(canvas.value.getContext('2d'), parent.value, store)
-            );
+            );  // canvas 标签用于绘制图像，parent 监听父组件
         });
 
         return {

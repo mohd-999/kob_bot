@@ -2,7 +2,7 @@ import { AcGameObject } from "./AcGameObject";
 import { Cell } from "./Cell";
 
 export class Snake extends AcGameObject {
-    constructor(info, gamemap) {
+    constructor(info, gamemap) {  // 构造函数
         super();
         this.id = info.id;
         this.color = info.color;
@@ -38,7 +38,7 @@ export class Snake extends AcGameObject {
         ];
     }
 
-    start() { // 初始化
+    start() { //只执行一次等于初始化
 
     }
 
@@ -97,7 +97,7 @@ export class Snake extends AcGameObject {
         }
     }
 
-    update() { // 每一帧
+    update() { // 每一帧执行一次，除了第一帧之外
         if(this.status === 'move') {
             this.update_move();
         }
@@ -114,9 +114,12 @@ export class Snake extends AcGameObject {
         }
 
         for(const cell of this.cells) {
-            ctx.beginPath();
+            ctx.beginPath();  // 起始一条路径，或重置当前路径。
             ctx.arc(cell.x * L, cell.y * L, 0.8 * L / 2, 0, Math.PI * 2);
-            ctx.fill();
+            // arc(x, y, r, sAngle, eAngle) 创建弧/曲线（用于创建圆形或部分圆）
+            // x，y圆心的坐标 r圆半径 sAngle：起始角 eAngle：结束角
+            // counterclockwise：规定应该(False = 顺时针，true = 逆时针)绘图
+            ctx.fill();  // 填充当前绘图（路径），填充颜色和fillStyle搭配使用
         }
 
         for(let i = 1; i < this.cells.length; ++i) {
@@ -128,15 +131,17 @@ export class Snake extends AcGameObject {
             } else if(Math.abs(a.y - b.y) < this.eps) {  // 向左右走
                 ctx.fillRect(Math.min(a.x, b.x) * L, (a.y - 0.4) * L, Math.abs(a.x - b.x) * L, L * 0.8);
             }
+            // fillRect(x,y,width,height)->绘制"被填充"的矩形，使用fillStyle修改填充色
         }
 
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "black";  // 黑色眼睛
         for(let i = 0; i < 2; ++i) {
             const eye_x = (this.cells[0].x + this.eye_dx[this.eye_direction][i]*0.15) * L;
             const eye_y = (this.cells[0].y + this.eye_dy[this.eye_direction][i]*0.15) * L;
             ctx.beginPath();
             ctx.arc(eye_x, eye_y, L * 0.05, 0, Math.PI * 2);
             ctx.fill();
+
         }
     }
 }

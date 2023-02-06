@@ -3,7 +3,7 @@ import { Snake } from "./Snake";
 import { Wall } from "./Wall";
 
 export class GameMap extends AcGameObject {
-    constructor(ctx, parent, store) {
+    constructor(ctx, parent, store) {  // 构造函数
         super();
 
         this.ctx = ctx;
@@ -11,16 +11,22 @@ export class GameMap extends AcGameObject {
         this.store = store;
         this.L = 0;
 
-        this.rows = 13;
-        this.cols = 14;
+        this.rows = 13;  // *****
+        this.cols = 14;  // *****
 
-        this.inner_walls_count = 10;
         this.walls = [];
 
         this.snakes = [
             new Snake({id: 0, color: "#4876EC", r: this.rows - 2, c: 1}, this),
             new Snake({id: 1, color: "#F94848", r: 1, c: this.cols - 2}, this),
         ];
+    }
+
+    set_rows(r) {
+        this.rows = r;
+    }
+    set_cols(c) {
+        this.cols = c;
     }
 
 
@@ -55,7 +61,7 @@ export class GameMap extends AcGameObject {
         });
     }
 
-    start() {
+    start() { // 只执行一次
         this.create_walls();
         this.add_listening_events();
     }
@@ -80,27 +86,7 @@ export class GameMap extends AcGameObject {
         }
     }
 
-    check_valid(cell) {  // 检查目标点是否撞到两条蛇身和障碍物
-        for(const wall of this.walls) {
-            if(wall.r === cell.r && wall.c === cell.c)
-                return false;
-        }
-
-        for(const snake of this.snakes) {
-            let k = snake.cells.length;
-            if(!snake.check_tail_increasing()) {  // 当蛇尾会前进时，不用判断蛇尾
-                k--;
-            }
-            for(let i = 0; i < k; ++i) {
-                if(snake.cells[i].r === cell.r && snake.cells[i].c === cell.c)
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
-    update() {
+    update() { // 每一帧执行一次，除了第一帧之外
         this.update_size();
         if(this.check_ready()) {
             this.next_step();
@@ -108,16 +94,17 @@ export class GameMap extends AcGameObject {
         this.render();
     }
 
-    render() {
+    render() {  // 地图染色
         const color_even = '#AAD751', color_odd = '#A2D149';
         for(let r = 0; r < this.rows; r++) {
             for(let c = 0; c < this.cols; c++) {
                 if((r + c) % 2 == 0) {
-                    this.ctx.fillStyle = color_even;
+                    this.ctx.fillStyle = color_even;  // 设置或返回用于填充绘画的颜色、渐变或模式。
                 } else {
                     this.ctx.fillStyle = color_odd;
                 }
                 this.ctx.fillRect(c * this.L, r * this.L, this.L, this.L);
+                  // 绘制"被填充"的矩形。使用fillStyle修改填充色  （x,y,width,height）
             }
         }
     }

@@ -46,9 +46,9 @@ import $ from 'jquery'
 export default {
     setup() {
         const store = useStore();
-        let match_btn_info = ref("开始匹配");
-        let bots = ref([]);
-        let select_bot = ref("-1");
+        let match_btn_info = ref("开始匹配");  // 初始为"开始匹配"，ref实现响应式实时更新数据
+        let bots = ref([]);  // 初始为空，ref实现响应式实时更新数据
+        let select_bot = ref("-1");   // 初始为-1，ref实现响应式实时更新数据
 
         const click_match_btn = () => {
             if(match_btn_info.value === "开始匹配") {

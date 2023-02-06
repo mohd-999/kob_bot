@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 export default {
-    state: {
+    state: {  // 放置初始状态 app启动的时候的全局的初始值
         id: "",
         username: "",
         photo: "",

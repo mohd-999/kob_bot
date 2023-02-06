@@ -3,7 +3,7 @@ import ModuleUser from './user'
 import ModulePk from './pk'
 
 export default createStore({
-  state: {
+  state: {  // 放置初始状态 app启动的时候的全局的初始值
   },
   getters: {
   },

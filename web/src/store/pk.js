@@ -1,5 +1,5 @@
 export default {
-    state: {
+    state: {  // 放置初始状态 app启动的时候的全局的初始值
         status: "matching",  // matching表示匹配界面，playing表示对战界面
         socket: null,
         opponent_username: "",
@@ -46,7 +46,5 @@ export default {
     actions: {
     },
     modules: {
-        // user: ModuleUser,
-        // pk: ModulePk,
     }
 }

@@ -8,6 +8,7 @@ import UserAccountLoginView from '../views/user/account/UserAccountLoginView'
 import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView'
 import store from '../store/index'
 
+// 前端路由
 const routes = [
   {
     path: "/",
