@@ -2,18 +2,15 @@ package com.kob.botrunningsystem.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-public class Bot implements com.kob.botrunningsystem.utils.BotInterface {
-    public static int INT = 0x3f3f3f3f;
-    public static int[][] g = new int[13][14];
-    public static int[][] path = new int[13][14];
-    public static int[] dx = {-1, 0, 1, 0};
-    public static int[] dy = {0, 1, 0, -1};
-
-
+//测试用
+public class Bot implements java.util.function.Supplier<Integer> {
     static class Cell {//蛇身体（单格）
         public int x, y;
+
         public Cell(int x, int y) {
             this.x = x;
             this.y = y;
@@ -26,7 +23,7 @@ public class Bot implements com.kob.botrunningsystem.utils.BotInterface {
     }
 
     public List<Cell> getCells(int sx, int sy, String steps) {//获取游戏中两条蛇的身体位置
-        steps = steps.substring(1, steps.length() - 1);
+        steps=steps.substring(1,steps.length()-1);
         List<Cell> res = new ArrayList<>();
 
         int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
@@ -45,30 +42,14 @@ public class Bot implements com.kob.botrunningsystem.utils.BotInterface {
         return res;
     }
 
-    //读取数据
-    public void get() {
-        File file = new File("input.txt");
-        try {
-            Scanner scanner = new Scanner(file);
-            System.out.println(nextMove(scanner.next()));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Integer nextMove(String input) {
+    public Integer nextMove(String input) {//！玩家需要编写的蛇移动核心代码
         String[] strs = input.split("#");
+        int[][] g = new int[13][14];
         for (int i = 0, k = 0; i < 13; i++) {
             for (int j = 0; j < 14; j++, k++) {
                 if (strs[0].charAt(k) == '1') {//找到地图中所有的墙
                     g[i][j] = 1;//1：障碍物，0：空地
                 }
-            }
-        }
-        for (int i = 0, k = 0; i < 13; i++) {
-            for (int j = 0; j < 14; j++, k++) {
-                path[i][j] = -1;
             }
         }
 
@@ -80,37 +61,26 @@ public class Bot implements com.kob.botrunningsystem.utils.BotInterface {
 
         for (Cell c : aCells) g[c.x][c.y] = 1;//将地图中两条蛇身体的位置标记成障碍物
         for (Cell c : bCells) g[c.x][c.y] = 1;
-        //        打印地图
-        //        printMap();
 
-        //        a蛇头坐标
-        int aHeadX = aCells.get(aCells.size() - 1).x;
-        int aHeadY = aCells.get(aCells.size() - 1).y;
-
-        int d = bfs(aHeadX, aHeadY);
-
-        return d;
-    }
-
-    //递归寻找路径
-    public static int bfs(int sx, int sy) {
-        if (sx<0 || sx>=13 || sy<0 || sy>=14 || g[sx][sy]==1) {
-            return 0;
-        }
-        int d = 0;
-        Queue<Cell> q = new LinkedList<>();
-        q.add(new Cell(sx, sy));
-        while(q.isEmpty()) {
-            Cell cell = q.remove();
-            for(int i = 0; i < 4; ++i) {
-                int x = cell.x + dx[i];
-                int y = cell.y + dy[i];
-                if (x<0 || x>=13 || y<0 || y>=14 || g[x][y]==1)
-                    continue;
-                g[x][y] = 1;
-                q.add(new Cell(x, y));
+        int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
+        for (int i = 0; i < 4; i++) {
+            int x = aCells.get(aCells.size() - 1).x + dx[i];
+            int y = aCells.get(aCells.size() - 1).y + dy[i];
+            if (x >= 0 && x < 13 && y >= 0 && y < 14 && g[x][y] == 0) {
+                return i;//选择一个合法的方向前进一格
             }
         }
-        return d;
+        return 0;//如果是死路，默认往上走自杀
+    }
+
+    @Override
+    public Integer get() {//文件读写
+        File file=new File("input.txt");
+        try {
+            Scanner scanner=new Scanner(file);
+            return nextMove(scanner.next());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
