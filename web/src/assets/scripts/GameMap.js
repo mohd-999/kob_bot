@@ -22,14 +22,6 @@ export class GameMap extends AcGameObject {
         ];
     }
 
-    set_rows(r) {
-        this.rows = r;
-    }
-    set_cols(c) {
-        this.cols = c;
-    }
-
-
     create_walls() {
         const g = this.store.state.pk.gamemap;
 
@@ -43,6 +35,28 @@ export class GameMap extends AcGameObject {
     }
 
     add_listening_events() {
+        if(this.store.state.record.is_record) {
+            let k = 0;
+            const a_steps = this.store.state.record.a_steps;
+            const b_steps = this.store.state.record.b_steps;
+            const loser = this.store.state.record.record_loser;
+            const [snake0, snake1] = this.snakes;
+            const interval_id = setInterval(() => {
+                if(k >= a_steps.length - 1) {
+                    if(loser === "all" || loser === "A") {
+                        snake0.status = "die";
+                    }
+                    if(loser === "all" || loser === "B") {
+                        snake1.status = "die";
+                    }
+                    clearInterval(interval_id);
+                } else {
+                    snake0.set_direction(parseInt(a_steps[k]));
+                    snake1.set_direction(parseInt(b_steps[k]));
+                }
+                k++;
+            }, 300);
+        } else {
         this.ctx.canvas.focus();
 
         this.ctx.canvas.addEventListener("keydown", e => {
@@ -59,6 +73,7 @@ export class GameMap extends AcGameObject {
                 }));
             }
         });
+        }
     }
 
     start() { // 只执行一次

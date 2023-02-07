@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PkIndexView from '../views/pk/PkIndexView'
-import RecordIndexView from '../views/record/RecordIndexView'
-import RanklistIndexView from '../views/ranklist/RanklistIndexView'
-import UserBotIndexView from '../views/user/bot/UserBotIndexView'
-import NotFound from '../views/error/NotFound'
-import UserAccountLoginView from '../views/user/account/UserAccountLoginView'
-import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView'
+import PkIndexView from '../views/pk/PkIndexView.vue'
+import RecordIndexView from '../views/record/RecordIndexView.vue'
+import RecordContentView from '../views/record/RecordContentView.vue'
+import RanklistIndexView from '../views/ranklist/RanklistIndexView.vue'
+import UserBotIndexView from '../views/user/bot/UserBotIndexView.vue'
+import NotFound from '../views/error/NotFound.vue'
+import UserAccountLoginView from '../views/user/account/UserAccountLoginView.vue'
+import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView.vue'
 import store from '../store/index'
 
 // 前端路由
@@ -30,6 +31,14 @@ const routes = [
     path: "/record/",
     name: "record_index",
     component: RecordIndexView,
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
+    path: "/record/:recordId/",
+    name: "record_content",
+    component: RecordContentView,
     meta: {
       requestAuth: true,
     }

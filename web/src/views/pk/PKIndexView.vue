@@ -22,6 +22,7 @@ export default {
         const socketUrl = `ws://127.0.0.1:3000/websocket/${store.state.user.token}/`;
 
         store.commit("updateLoser", "none");
+        store.commit("updateIsRecord", false);
 
         let socket = null;
         onMounted(() => {  // 创建连接
@@ -45,7 +46,7 @@ export default {
                     setTimeout(() => {
                         store.commit("updateStatus", "playing");
                     }, 1000);
-                    store.commit("updateGamemap", data.game);
+                    store.commit("updateGame", data.game);
                 } else if(data.event === "move") {  // 下一步
                     const game = store.state.pk.gameObject;
                     const [snake0, snake1] = game.snakes;

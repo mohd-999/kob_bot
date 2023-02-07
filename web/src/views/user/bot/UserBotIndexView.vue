@@ -12,7 +12,7 @@
                 <div class="card" style="margin-top: 30px;">
                     <div class="card-header">
                         <span style="font-size: 150%;">我的Bot</span>
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-bot-bth">
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-bot-btn">
                             创建Bot
                         </button>
                         <!-- 创建按钮 -->
