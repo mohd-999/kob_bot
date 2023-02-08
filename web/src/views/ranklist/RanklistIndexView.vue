@@ -55,7 +55,7 @@ export default {
         const click_page = page => {
             let max_pages = parseInt(Math.ceil(total_users / 10));
             if(page === -2) page = 1;
-            else if(page == -1) page = max_pages;
+            else if(page === -1) page = max_pages;
 
             if(page >= 1 && page <= max_pages) {
                 pull_page(page);

@@ -68,7 +68,7 @@ export default {
         const click_page = page => {
             let max_pages = parseInt(Math.ceil(total_records / 10));
             if(page === -2) page = 1;
-            else if(page == -1) page = max_pages;
+            else if(page === -1) page = max_pages;
 
             if(page >= 1 && page <= max_pages) {
                 pull_page(page);
@@ -127,32 +127,33 @@ export default {
         }
 
         const open_record_content = recordId => {
-            for(const record of records.value) {  // 可二分
-                if(record.record.id === recordId) {
-                    store.commit("updateIsRecord", true);  // 说明是录像
-                    store.commit("updateGame", {  // 传游戏地图
-                        map: stringTo2D(record.record.map),
-                        a_id: record.record.aid,
-                        a_sx: record.record.asx,
-                        a_sy: record.record.asy,
-                        b_id: record.record.bid,
-                        b_sx: record.record.bsx,
-                        b_sy: record.record.bsy,
-                    });
-                    store.commit("updateSteps", {
-                        a_steps: record.record.asteps,
-                        b_steps: record.record.bsteps,
-                    });
-                    store.commit("updateRecordLoser", record.record.loser);
-                    router.push({
-                        name:"record_content",
-                        params: {
-                            recordId
-                        }
-                    })
-                    break;
-                }
+            let l = 0, r = 9, mid;
+            while(l <= r) { // 二分优化
+                mid = Math.ceil((l+r) / 2);
+                if(records.value[mid].record.id > recordId) l = mid + 1;
+                else r = mid - 1;
             }
+            store.commit("updateIsRecord", true);  // 说明是录像
+                store.commit("updateGame", {  // 传游戏地图
+                    map: stringTo2D(records.value[l].record.map),
+                    a_id: records.value[l].record.aid,
+                    a_sx: records.value[l].record.asx,
+                    a_sy: records.value[l].record.asy,
+                    b_id: records.value[l].record.bid,
+                    b_sx: records.value[l].record.bsx,
+                    b_sy: records.value[l].record.bsy,
+                });
+            store.commit("updateSteps", {
+                a_steps: records.value[l].record.asteps,
+                b_steps: records.value[l].record.bsteps,
+            });
+            store.commit("updateRecordLoser", records.value[l].record.loser);
+            router.push({
+                name:"record_content",
+                params: {
+                    recordId
+                }
+            });
         }
 
         return {

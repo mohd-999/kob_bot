@@ -12,7 +12,7 @@
             <div class="col-4">
                 <div class="user-select-bot">
                     <select v-model="select_bot" class="form-select" aria-label="Default select example">
-                        <option value="-1" selected>亲自上阵</option>
+                        <option value="-1" v-if="match_btn_info === '开始匹配' || parseInt(select_bot) === -1" selected>御驾亲征</option>
                         <option v-for="bot in bots" :key="bot.id" :value="bot.id">
                             {{ bot.title }}
                         </option>
@@ -29,8 +29,8 @@
             </div>
             <div class="col-12" style="text-align:center; padding-top: 15vh;">
                 <button @click="click_match_btn" type="button"
-                    :class="match_btn_info == '开始匹配' ?
-                    'btn btn-success btn-lg' : 'btn btn-danger btn-lg'">
+                    :class="'btn btn-' + (match_btn_info === '开始匹配' ?
+                    'success' : 'danger') + ' btn-lg'">
                     {{ match_btn_info }}
                 </button>
             </div>
@@ -50,15 +50,27 @@ export default {
         let bots = ref([]);  // 初始为空，ref实现响应式实时更新数据
         let select_bot = ref("-1");   // 初始为-1，ref实现响应式实时更新数据
 
+        const update_bots = () => {  // 开始匹配后不能更换参战人员
+            let new_bots = [];
+            for(const bot of bots.value) {
+                if(bot.id === select_bot.value) {
+                    new_bots.push(bot);
+                }
+            }
+            bots.value = new_bots;
+        }
+
         const click_match_btn = () => {
             if(match_btn_info.value === "开始匹配") {
                 match_btn_info.value = "取消";
+                update_bots();
                 store.state.pk.socket.send(JSON.stringify({
                     event: "start-matching",
                     bot_id: select_bot.value,
                 }));
             } else {
                 match_btn_info.value = "开始匹配";
+                refresh_bots();
                 store.state.pk.socket.send(JSON.stringify({
                     event: "stop-matching",
                 }));

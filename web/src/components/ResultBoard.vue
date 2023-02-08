@@ -1,6 +1,6 @@
 <template>
     <div class="result-board">
-        <div class="result-board-text" v-if="$store.state.pk.loser == 'all'">
+        <div class="result-board-text" v-if="$store.state.pk.loser === 'all'">
             平局
         </div>
         <div class="result-board-text" v-else-if="$store.state.pk.loser === 'A' &&
