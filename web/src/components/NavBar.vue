@@ -23,16 +23,18 @@
         </ul>
         <ul class="navbar-nav" v-if="$store.state.user.is_login">
             <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ $store.state.user.username }}
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li>
-                    <router-link class="dropdown-item" :to="{name: 'user_bot_index'}">我的Bot</router-link>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#" @click="logout">退出</a></li>
-            </ul>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ $store.state.user.username }}
+                    &nbsp;
+                    <img :src="$store.state.user.photo" alt="" class="user-photo">
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <router-link class="dropdown-item" :to="{name: 'user_bot_index'}">我的Bot</router-link>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" @click="logout">退出</a></li>
+                </ul>
             </li>
         </ul>
         <ul class="navbar-nav" v-else-if="!$store.state.user.pulling_info">
@@ -76,4 +78,8 @@ export default {
 </script>
 
 <style scoped>
+img.user-photo {
+    width: 4vh;
+    border-radius: 50%;
+}
 </style>
