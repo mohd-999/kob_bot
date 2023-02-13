@@ -42,7 +42,7 @@ export class Snake extends AcGameObject {
 
     }
 
-    set_direction(d) {
+    set_direction(d) {  // 将指令转化为当前对象的下一步指令
         this.direction = d;
     }
 

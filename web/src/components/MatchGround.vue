@@ -11,8 +11,8 @@
             </div>
             <div class="col-4">
                 <div class="user-select-bot">
-                    <select v-model="select_bot" class="form-select" aria-label="Default select example">
-                        <option value="-1" v-if="match_btn_info === '开始匹配' || parseInt(select_bot) === -1" selected>御驾亲征</option>
+                    <select v-model="select_bot" class="form-select" aria-label="Default select example" :disabled="match_btn_info === '取消'">
+                        <option value="-1" selected>御驾亲征</option>
                         <option v-for="bot in bots" :key="bot.id" :value="bot.id">
                             {{ bot.title }}
                         </option>
@@ -50,20 +50,9 @@ export default {
         let bots = ref([]);  // 初始为空，ref实现响应式实时更新数据
         let select_bot = ref("-1");   // 初始为-1，ref实现响应式实时更新数据
 
-        const update_bots = () => {  // 开始匹配后不能更换参战人员
-            let new_bots = [];
-            for(const bot of bots.value) {
-                if(bot.id === select_bot.value) {
-                    new_bots.push(bot);
-                }
-            }
-            bots.value = new_bots;
-        }
-
         const click_match_btn = () => {
             if(match_btn_info.value === "开始匹配") {
                 match_btn_info.value = "取消";
-                update_bots();
                 store.state.pk.socket.send(JSON.stringify({
                     event: "start-matching",
                     bot_id: select_bot.value,
@@ -79,6 +68,7 @@ export default {
 
         const refresh_bots = () => {
             $.ajax({
+                // url: "http://127.0.0.1:3000/api/user/bot/getlist/",
                 url: "https://app4435.acapp.acwing.com.cn/api/user/bot/getlist/",
                 type: "get",
                 headers: {

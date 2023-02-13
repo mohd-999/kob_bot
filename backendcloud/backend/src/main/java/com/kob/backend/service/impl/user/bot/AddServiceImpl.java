@@ -37,8 +37,8 @@ public class AddServiceImpl implements AddService {
             map.put("error_message", "标题不能为空");
             return map;
         }
-        if (title.length() > 100) {
-            map.put("error_message", "标题长度不能大于100");
+        if (title.length() > 30) {
+            map.put("error_message", "标题长度不能大于30");
             return map;
         }
         if (description == null || description.length() == 0) {

@@ -27,26 +27,25 @@ public class RegisterServiceImpl implements RegisterService {
             map.put("error_message", "用户名不能为空");
             return map;
         }
-        if (password == null || confirmedPassword == null) {
-            map.put("error_message", "密码不能为空");
-            return map;
-        }
-
         username = username.trim();
         if (username.length() == 0) {
             map.put("error_message", "用户名不能为空");
             return map;
         }
-        if (username.length() > 100) {
-            map.put("error_message", "用户名不能大于100");
+        if (username.length() > 20) {
+            map.put("error_message", "用户名不能大于20");
             return map;
         }
-        if (password.length() == 0 || confirmedPassword.length() == 0) {
+        if (password == null || password.length() == 0) {
             map.put("error_message", "密码不能为空");
             return map;
         }
-        if (password.length() > 100 || confirmedPassword.length() > 100) {
-            map.put("error_message", "密码不能大于100");
+        if (confirmedPassword == null || confirmedPassword.length() == 0) {
+            map.put("error_message", "确认密码不能为空");
+            return map;
+        }
+        if (password.length() > 20 || confirmedPassword.length() > 20) {
+            map.put("error_message", "密码不能大于20");
             return map;
         }
 
@@ -65,7 +64,8 @@ public class RegisterServiceImpl implements RegisterService {
 
         String encodedPassword = passwordEncoder.encode(password);
         String photo = "https://cdn.acwing.com/media/user/profile/photo/63694_lg_bded774842.jpg";
-        User user = new User(null, username, encodedPassword, photo, 1500);
+        String introduction = "这个用户很懒，什么也没留下！";
+        User user = new User(null, username, encodedPassword, null, introduction, photo, 1500);
         userMapper.insert(user);
         map.put("error_message", "success");
         return map;

@@ -1,3 +1,4 @@
+<!-- template 为 HTML5 -->
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
@@ -20,7 +21,7 @@
             <li class="nav-item">
                 <router-link :class="'nav-link ' + (route_name === 'ranklist_index' ? 'active' : '')" :to="{name: 'ranklist_index'}">排行榜</router-link>
             </li>
-        </ul>
+        </ul> <!-- 左边 -->
         <ul class="navbar-nav" v-if="$store.state.user.is_login">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -29,6 +30,9 @@
                     <img :src="$store.state.user.photo" alt="" class="user-photo">
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <router-link class="dropdown-item" :to="{name: 'user_center_name_index'}">个人中心</router-link>
+                    </li>
                     <li>
                         <router-link class="dropdown-item" :to="{name: 'user_bot_index'}">我的Bot</router-link>
                     </li>
@@ -48,12 +52,13 @@
                 注册
             </router-link>
             </li>
-        </ul>
+        </ul><!-- 右边 -->
         </div>
     </div>
     </nav>
 </template>
 
+<!-- script 为 JS -->
 <script>
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
@@ -77,6 +82,8 @@ export default {
 }
 </script>
 
+<!-- style 为 CSS -->
+<!-- scoped 使组件加上随机字符串 不影响到这个文件以外的地方 -->
 <style scoped>
 img.user-photo {
     width: 4vh;

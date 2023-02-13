@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import HomeIndexView from '../views/home/HomeIndexView.vue'
 import PkIndexView from '../views/pk/PkIndexView.vue'
 import RecordIndexView from '../views/record/RecordIndexView.vue'
 import RecordContentView from '../views/record/RecordContentView.vue'
 import RanklistIndexView from '../views/ranklist/RanklistIndexView.vue'
+import UserCenterNameIndexView from '../views/user/center/UserCenterNameIndexView.vue'
+import UserCenterPasswordIndexView from '../views/user/center/UserCenterPasswordIndexView.vue'
 import UserBotIndexView from '../views/user/bot/UserBotIndexView.vue'
 import NotFound from '../views/error/NotFound.vue'
 import UserAccountLoginView from '../views/user/account/UserAccountLoginView.vue'
@@ -14,7 +17,8 @@ const routes = [
   {
     path: "/",
     name: "home",
-    redirect: "/pk/",
+    component: HomeIndexView,
+    // redirect: "/pk/",
     meta: {
       requestAuth: true,
     }
@@ -60,6 +64,22 @@ const routes = [
     }
   },
   {
+    path: "/user/center/name/",
+    name: "user_center_name_index",
+    component: UserCenterNameIndexView,
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
+    path: "/user/center/password/",
+    name: "user_center_password_index",
+    component: UserCenterPasswordIndexView,
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
     path: "/user/account/login/",
     name: "user_account_login",
     component: UserAccountLoginView,
@@ -91,7 +111,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
 
 router.beforeEach((to, from, next) => {

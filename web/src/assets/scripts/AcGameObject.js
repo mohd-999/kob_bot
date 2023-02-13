@@ -3,8 +3,8 @@ const AC_GAME_OBJECTS = [];
 export class AcGameObject {
     constructor() {  // 构造函数
         AC_GAME_OBJECTS.push(this);
-        this.timedelta = 0;
-        this.has_called_start = false;
+        this.timedelta = 0;  // 时间间隔
+        this.has_called_start = false;  // 是否第一次执行
     }
 
     start() { // 只执行一次
@@ -19,7 +19,7 @@ export class AcGameObject {
 
     }
 
-    destroy() {
+    destroy() {  // 删除对象
         this.on_destroy();
 
         for(let i in AC_GAME_OBJECTS) {

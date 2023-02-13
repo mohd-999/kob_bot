@@ -33,13 +33,13 @@
         <nav aria-label="...">
         <ul class="pagination" style="float: right;">
             <li class="page-item" @click="click_page(-2)">
-                <a class="page-link" href="#">首页</a>
+                <a class="page-link" href="#">&laquo;</a>
             </li>
             <li :class="'page-item ' + page.is_active" v-for="page in pages" :key="page.number" @click="click_page(page.number)">
                 <a class="page-link" href="#">{{ page.number }}</a>
             </li>
             <li class="page-item" @click="click_page(-1)">
-                <a class="page-link" href="#">尾页</a>
+                <a class="page-link" href="#">&raquo;</a>
             </li>
         </ul>
         </nav>
@@ -92,6 +92,7 @@ export default {
         const pull_page = page => {
             current_page = page;
             $.ajax({
+                // url: "http://127.0.0.1:3000/api/record/getlist/",
                 url: "https://app4435.acapp.acwing.com.cn/api/record/getlist/",
                 data: {
                     page,

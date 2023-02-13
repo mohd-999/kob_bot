@@ -17,7 +17,7 @@ export default {
     getters: {
     },
     mutations: {
-        updateSocket(state, socket) {  // 前后端连接
+        updateSocket(state, socket) {  // 连接更换界面
             state.socket = socket;
         },
         updateOpponent(state, opponent) { // 对手的名字头像

@@ -1,5 +1,7 @@
 <template>
+  <!-- NavBar 导航栏，全网站地址都用到 -->
   <NavBar />
+  <!-- router-view 根据网址变化，具体变化规则由 router 文件夹下的 index.js 定义 -->
   <router-view></router-view>
 </template>
 
@@ -17,7 +19,7 @@ export default {
 
 <style>
 body {
-  background-image: url("@/assets/images/background.png");
+  background-image: url("@/assets/images/preview1.jpg");
   background-size: cover;
 }
 </style>
