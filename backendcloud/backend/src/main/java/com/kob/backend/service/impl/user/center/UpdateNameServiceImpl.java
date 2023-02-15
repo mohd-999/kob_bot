@@ -48,7 +48,7 @@ public class UpdateNameServiceImpl implements UpdateNameService {
             map.put("error_message", "邮箱不能大于30");
             return map;
         }
-        if(introduction == null || introduction.length() == 0) {
+        if (introduction == null || introduction.length() == 0) {
             introduction = "这个用户很懒，什么也没留下！！";
         }
         if (introduction.length() > 300) {

@@ -128,15 +128,18 @@ export default {
         }
 
         const open_record_content = recordId => {
-            let l = 0, r = 9, mid;
+            let l = 0, r = Object.keys(records.value).length - 1, mid;
             while(l <= r) { // 二分优化
                 mid = Math.ceil((l+r) / 2);
                 if(records.value[mid].record.id > recordId) l = mid + 1;
                 else r = mid - 1;
             }
+            console.log(records.value[l]);
             store.commit("updateIsRecord", true);  // 说明是录像
                 store.commit("updateGame", {  // 传游戏地图
                     map: stringTo2D(records.value[l].record.map),
+                    rows: records.value[l].record.mapRow,
+                    cols: records.value[l].record.mapCol,
                     a_id: records.value[l].record.aid,
                     a_sx: records.value[l].record.asx,
                     a_sy: records.value[l].record.asy,

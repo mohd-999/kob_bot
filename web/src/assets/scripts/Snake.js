@@ -52,8 +52,6 @@ export class Snake extends AcGameObject {
         return false;
     }
 
-
-
     next_step() {  // 将蛇的状态变为下一回合
         const d = this.direction;
         this.next_cell = new Cell(this.cells[0].r + this.dr[d], this.cells[0].c + this.dc[d]);

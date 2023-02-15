@@ -35,52 +35,6 @@ public class WebSocketServer {
     private User user;
     private Session session = null;
 
-    private static void resp(User a, User b, JSONObject respGame) {
-        JSONObject respA = new JSONObject();
-        respA.put("event", "start-matching");
-        respA.put("opponent_username", b.getUsername());
-        respA.put("opponent_photo", b.getPhoto());
-        respA.put("game", respGame);
-        if (users.get(a.getId()) != null)
-            users.get(a.getId()).sendMessage(respA.toJSONString());
-    }
-
-    public static void startGame(Integer aId, Integer aBotId, Integer bId, Integer bBotId) {  // 建立对局信息
-        User a = userMapper.selectById(aId);
-        User b = userMapper.selectById(bId);
-        Bot botA = botMapper.selectById(aBotId);
-        Bot botB = botMapper.selectById(bBotId);
-        Game game = new Game(
-                13,
-                14,
-                10,
-                a.getId(),
-                botA,
-                b.getId(),
-                botB
-        );
-        game.createMap();
-        if (users.get(a.getId()) != null)
-            users.get(a.getId()).game = game;
-        if (users.get(b.getId()) != null)
-            users.get(b.getId()).game = game;
-
-        game.start();
-
-        JSONObject respGame = new JSONObject();
-        respGame.put("a_id", game.getPlayerA().getId());
-        respGame.put("a_sx", game.getPlayerA().getSx());
-        respGame.put("a_sy", game.getPlayerA().getSy());
-        respGame.put("b_id", game.getPlayerB().getId());
-        respGame.put("b_sx", game.getPlayerB().getSx());
-        respGame.put("b_sy", game.getPlayerB().getSy());
-        respGame.put("map", game.getG());
-
-        resp(a, b, respGame);
-
-        resp(b, a, respGame);
-    }
-
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         WebSocketServer.userMapper = userMapper;
@@ -120,7 +74,60 @@ public class WebSocketServer {
         System.out.println("disconnected!");
         if (this.user != null) {
             users.remove(this.user.getId());
+            MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+            data.add("user_id", this.user.getId().toString());
+            restTemplate.postForObject(removePlayerUrl, data, String.class);
         }
+    }
+
+    private static void resp(User a, User b, JSONObject respGame) {
+        JSONObject respA = new JSONObject();
+        respA.put("event", "start-matching");
+        respA.put("opponent_username", b.getUsername());
+        respA.put("opponent_photo", b.getPhoto());
+        respA.put("game", respGame);
+        if (users.get(a.getId()) != null)
+            users.get(a.getId()).sendMessage(respA.toJSONString());
+    }
+    public static void startGame(Integer aId, Integer aBotId, Integer bId, Integer bBotId) {  // 建立对局信息
+        User a = userMapper.selectById(aId);
+        User b = userMapper.selectById(bId);
+        Bot botA = botMapper.selectById(aBotId);
+        Bot botB = botMapper.selectById(bBotId);
+
+        Integer rows = 13;  // 行
+        Integer cols = 14;  // 列
+        Integer inner_walls_count = 10;  // 障碍物数量
+        Game game = new Game(
+                rows,
+                cols,
+                inner_walls_count,
+                a.getId(),
+                botA,
+                b.getId(),
+                botB
+        );
+        game.createMap();
+        if (users.get(a.getId()) != null)
+            users.get(a.getId()).game = game;
+        if (users.get(b.getId()) != null)
+            users.get(b.getId()).game = game;
+
+        game.start();
+
+        JSONObject respGame = new JSONObject();
+        respGame.put("a_id", game.getPlayerA().getId());
+        respGame.put("a_sx", game.getPlayerA().getSx());
+        respGame.put("a_sy", game.getPlayerA().getSy());
+        respGame.put("b_id", game.getPlayerB().getId());
+        respGame.put("b_sx", game.getPlayerB().getSx());
+        respGame.put("b_sy", game.getPlayerB().getSy());
+        respGame.put("rows", rows);
+        respGame.put("cols", cols);
+        respGame.put("map", game.getG());
+
+        resp(a, b, respGame);
+        resp(b, a, respGame);
     }
 
     private void startMatching(Integer botId) {  // 玩家加入匹配池

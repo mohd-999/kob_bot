@@ -11,8 +11,10 @@ export class GameMap extends AcGameObject {
         this.store = store;
         this.L = 0;
 
-        this.rows = 13;  // *****
-        this.cols = 14;  // *****
+        this.rows = this.store.state.pk.rows;  // 行
+        this.cols = this.store.state.pk.cols;  // 列
+        // this.rows = 13;
+        // this.cols = 14;
 
         this.walls = [];
 
@@ -65,6 +67,10 @@ export class GameMap extends AcGameObject {
             else if(e.key === 'd') d = 1;
             else if(e.key === 's') d = 2;
             else if(e.key === 'a') d = 3;
+            else if(e.key === 'ArrowUp') d = 0;
+            else if(e.key === 'ArrowRight') d = 1;
+            else if(e.key === 'ArrowDown') d = 2;
+            else if(e.key === 'ArrowLeft') d = 3;
 
             if(d >= 0) {
                 this.store.state.pk.socket.send(JSON.stringify({

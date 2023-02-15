@@ -5,6 +5,8 @@ export default {
         opponent_username: "",
         opponent_photo: "",
         gamemap: null,
+        rows: 0,
+        cols: 0,
         a_id: 0,
         a_sx: 0,
         a_sy: 0,
@@ -29,6 +31,8 @@ export default {
         },
         updateGame(state, game) {
             state.gamemap = game.map;
+            state.rows = game.rows;
+            state.cols = game.cols;
             state.a_id = game.a_id;
             state.a_sx = game.a_sx;
             state.a_sy = game.a_sy;

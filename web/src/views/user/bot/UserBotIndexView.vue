@@ -39,7 +39,7 @@
                                         @init="editorInit"
                                         lang="c_cpp"
                                         theme="textmate"
-                                        style="height: 300px" />
+                                        style="height: 300px; font-size: large;" />
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -183,7 +183,7 @@ export default {
                         botadd.title = "";
                         botadd.description = "";
                         botadd.content = "";
-                        Modal.getInstance("#add-bot-btn").hide();
+                        Modal.getInstance("#add-bot-btn").hide();  // 关闭创建框
                         refresh_bots();
                     } else {
                         botadd.error_message = resp.error_message;

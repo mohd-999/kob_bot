@@ -72,7 +72,7 @@ public class Game extends Thread {
     public void setNextStepB(Integer nextStepB) {
         lock.lock();
         try {
-            this.nextStepB = nextStepB;
+            this.nextStepB = nextStepB;  // 因为B看到的地图是翻转，所以B的位移是反向的
         } finally {
             lock.unlock();
         }
@@ -167,7 +167,7 @@ public class Game extends Thread {
         WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
     }
 
-    private boolean nextStep() {  // 等待两名玩家操作
+    private boolean nextStep() {  // 等待两名玩家操作下一步
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -287,7 +287,6 @@ public class Game extends Thread {
         updateUserRating(playerA, ratingA);
         updateUserRating(playerB, ratingB);
 
-
         Record record = new Record(
                 null,
                 playerA.getId(),
@@ -298,6 +297,8 @@ public class Game extends Thread {
                 playerB.getSy(),
                 playerA.getStepsString(),
                 playerB.getStepsString(),
+                rows,
+                cols,
                 getMapString(),
                 loser,
                 new Date()
@@ -306,7 +307,7 @@ public class Game extends Thread {
         WebSocketServer.recordMapper.insert(record);
     }
 
-    private void sendResult() {  // 向两名玩家公布结果
+    private void sendResult() {  // 向两个Client公布结果
         JSONObject resp = new JSONObject();
         resp.put("event", "result");
         resp.put("loser", loser);
@@ -317,7 +318,7 @@ public class Game extends Thread {
     @Override
     public void run() {  // 多线程
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1000);   // 等待进入游戏
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

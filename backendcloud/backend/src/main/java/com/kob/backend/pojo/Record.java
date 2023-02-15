@@ -23,6 +23,8 @@ public class Record {
     private Integer bSy;
     private String aSteps;
     private String bSteps;
+    private Integer mapRow;
+    private Integer mapCol;
     private String map;
     private String loser;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
